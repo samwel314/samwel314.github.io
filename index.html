@@ -5,33 +5,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>HappyEaster</title>
+    
+    <!-- الـ Base href أساسي عشان المسارات -->
     <base href="/" />
+
     <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/app.css" />
     <link rel="icon" type="image/png" href="favicon.png" />
     <link href="HappyEaster.styles.css" rel="stylesheet" />
-    <script type="importmap">{
-  "imports": {
-    "./_framework/blazor.webassembly.js": "./_framework/blazor.webassembly.66stpp682q.js",
-    "./_framework/dotnet.js": "./_framework/dotnet.9wyibj2met.js",
-    "./_framework/dotnet.native.js": "./_framework/dotnet.native.1bo0jcjg8s.js",
-    "./_framework/dotnet.runtime.js": "./_framework/dotnet.runtime.peu2mfb29t.js"
-  },
-  "scopes": {},
-  "integrity": {
-    "./_framework/blazor.webassembly.66stpp682q.js": "sha256-3lCWrko3zwspV40aQhs2S/IMkRSarnHRKIdkHhuXIBA=",
-    "./_framework/blazor.webassembly.js": "sha256-3lCWrko3zwspV40aQhs2S/IMkRSarnHRKIdkHhuXIBA=",
-    "./_framework/dotnet.9wyibj2met.js": "sha256-18d0ieT6BsKNhFjkfxk2jzUfWmLeoiYtO/OEBYXTaJw=",
-    "./_framework/dotnet.js": "sha256-18d0ieT6BsKNhFjkfxk2jzUfWmLeoiYtO/OEBYXTaJw=",
-    "./_framework/dotnet.native.1bo0jcjg8s.js": "sha256-87EuQj57WZ7vrCG+YrO8F6rhSIC93zlr3szr9cDoI2U=",
-    "./_framework/dotnet.native.js": "sha256-87EuQj57WZ7vrCG+YrO8F6rhSIC93zlr3szr9cDoI2U=",
-    "./_framework/dotnet.runtime.js": "sha256-cajUr4vA/MpLPWj3omULUOwEQw3i8CE2n8AmDheqWBM=",
-    "./_framework/dotnet.runtime.peu2mfb29t.js": "sha256-cajUr4vA/MpLPWj3omULUOwEQw3i8CE2n8AmDheqWBM="
-  }
-}</script>
 
+    <!-- تم حذف الـ importmap لأنها سبب الـ Integrity Error على GitHub -->
 </head>
 
 <body>
@@ -48,8 +33,24 @@
         <a href="." class="reload">Reload</a>
         <span class="dismiss">🗙</span>
     </div>
-<script src="_framework/blazor.webassembly.66stpp682q.js" autostart="false"></script>
-<script>
+
+    <!-- 1. استدعاء ملف بليزور الرئيسي (بالاسم المشفر اللي عندك) -->
+    <script src="_framework/blazor.webassembly.66stpp682q.js" autostart="false"></script>
+
+    <!-- 2. تشغيل بليزور يدوياً وتخطي فحص الـ Integrity -->
+    <script>
+        if (window.Blazor) {
+            Blazor.start({
+                loadBootResource: function (type, name, defaultUri, integrity) {
+                    // ده السطر اللي بيحل مشكلة Failed to find a valid digest
+                    return defaultUri;
+                }
+            });
+        }
+    </script>
+
+    <!-- 3. الكود الخاص بيك لتوليد الكروت -->
+    <script>
         window.generateProfessionalCard = async (name, message, templatePath) => {
             return new Promise(async (resolve, reject) => {
                 const canvas = document.createElement('canvas');
@@ -68,42 +69,40 @@
 
                 let nX, nY, mX, mY, nColor, mColor, nSize, mSize, textAlign;
 
-
                 if (templatePath.includes("temp1.png")) {
                     textAlign = "left";
                     nX = 35; nY = 560;
                     mX = 35; mY = 610;
-                    nColor = "#FFD700"; // ذهبي منور
-                    mColor = "#FFFFFF"; // أبيض ناصع
+                    nColor = "#FFD700"; 
+                    mColor = "#FFFFFF"; 
                     nSize = 65; mSize = 45;
                 }
                 else if (templatePath.includes("temp2.png")) {
                     textAlign = "center";
                     nX = canvas.width / 2; nY = 1192;
                     mX = nX; mY = 1242;
-                    nColor = "#D21F3C"; // أحمر ملكي
-                    mColor = "#4A4A4A"; // رمادي غامق شيك
+                    nColor = "#D21F3C"; 
+                    mColor = "#4A4A4A"; 
                     nSize = 65; mSize = 45;
                 }
                 else if (templatePath.includes("temp3.png")) {
                     textAlign = "center";
                     nX = canvas.width / 2; nY = 960;
                     mX = nX; mY = 1010;
-                    nColor = "#FFFFFF"; // أبيض عشان يبان على الصخر الغامق
-                    mColor = "#FFD700"; // ذهبي للرسالة
+                    nColor = "#FFFFFF"; 
+                    mColor = "#FFD700"; 
                     nSize = 65; mSize = 45;
                 }
                 else if (templatePath.includes("temp4.png")) {
                     textAlign = "center";
                     nX = canvas.width / 2; nY = 774;
                     mX = nX; mY = 824;
-                    nColor = "#B22222"; // أحمر طوبي يليق بالرسم اليدوي
-                    mColor = "#FFD700"; // أسود خفيف
+                    nColor = "#B22222"; 
+                    mColor = "#FFD700"; 
                     nSize = 65; mSize = 45;
                 }
 
                 ctx.textAlign = textAlign;
-
                 ctx.font = `bold ${nSize}px 'UncialAntiqua', serif`;
                 ctx.fillStyle = nColor;
                 ctx.shadowColor = "rgba(0, 0, 0, 0.6)";
@@ -119,17 +118,7 @@
                 resolve(canvas.toDataURL("image/png"));
             });
         };
-
     </script>
-    <script>
-    if (window.Blazor) {
-        Blazor.start({
-            loadBootResource: function (type, name, defaultUri, integrity) {
-                return defaultUri; 
-            }
-        });
-    }
-</script>
 </body>
 
 </html>
